@@ -3,6 +3,7 @@ import json
 import sys
 import configparser
 import datetime
+from datetime import date
 from influxdb import InfluxDBClient
 import argparse
 
@@ -11,8 +12,6 @@ config.read("config.ini")
 
 parser=argparse.ArgumentParser(
     description='''Script to login to E-REDES distribución of the spanish energy company and download consumptions and save to a file and influxdb. ''')
-parser.add_argument('startDate', help='dd/MM/yyyy')
-parser.add_argument('endDate', help='dd/MM/yyyy')
 args=parser.parse_args()
 
 def login():
@@ -112,9 +111,20 @@ def save_to_file(start_date, end_date, result_json):
         json.dump(result_json, f)
 
 
+def last_day_of_month(any_day):
+    # this will never fail
+    # get close to the end of the month for any day, and add 4 days 'over'
+    next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+    # subtract the number of remaining 'overage' days to get last day of current month, 
+    # or said programatically said, the previous day of the first of next month
+    return next_month - datetime.timedelta(days=next_month.day)
+
 def main():
-    start_date = sys.argv[1]
-    end_date = sys.argv[2]
+    start_date = (date.today() - datetime.timedelta(days=30)).replace(day=1).strftime('%d/%m/%Y')
+    end_date = last_day_of_month((date.today() - datetime.timedelta(days=30)).replace(day=1)).strftime('%d/%m/%Y')
+    
+    print(start_date)
+    print(end_date)
 
     login_info = login()
     access_token = login_info["accessToken"]
