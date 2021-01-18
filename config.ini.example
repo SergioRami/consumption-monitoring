@@ -1,0 +1,15 @@
+# Is mandatory rename this file as config.ini
+
+[USER]
+username = {{ USERNAME }}
+password = {{ PASSWORD }}
+
+[URL]
+apikey = {{ API_KEY }}
+url_login = {{ URL_LOGIN_EREDES }}
+url_consumption = {{ URL_CONSUMPTION_EREDES}}
+
+[INFLUXDB]
+host = {{ HOST_INFLUXDB}}
+port = {{ PORT_INFLUXDB }}
+db = {{ NAME_INFLUXDB }}
